@@ -1,5 +1,10 @@
 package main
 
+import (
+	"github.com/gin-gonic/gin"
+)
+
 func main() {
-	println("hello")
+	router := gin.Default()
+	router.GET("/", func(c *gin.Context) {})
 }
