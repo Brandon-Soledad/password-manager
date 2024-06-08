@@ -46,7 +46,10 @@ func UpdateUserPassword(c *gin.Context) {
 
 	// Convert the ID to an integer
 	var userID int32
-	fmt.Sscanf(id, "%d", &userID)
+	_, err := fmt.Sscanf(id, "%d", &userID)
+	if err != nil {
+		return
+	}
 
 	// Retrieve the user from the database
 	var user User
@@ -71,4 +74,25 @@ func UpdateUserPassword(c *gin.Context) {
 	db.Save(&user)
 
 	c.JSON(http.StatusOK, gin.H{"message": "Password updated successfully"})
+}
+
+func DeleteUser(c *gin.Context) {
+	// Get the ID parameter from the request URL
+	id := c.Param("id")
+
+	// Convert the ID to an integer
+	var userID int32
+	_, err := fmt.Sscanf(id, "%d", &userID)
+	if err != nil {
+		return
+	}
+
+	// Delete the user from the database
+	result := db.Delete(&User{}, userID)
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete user"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "User deleted successfully"})
 }
